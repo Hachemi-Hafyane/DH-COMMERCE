@@ -9,7 +9,7 @@ const app = express();
 
 // Definindo as rotas (isso deve vir depois da inicialização do app)
 const produtoRouter = require('./routes/produto');
-const usuarioRouter = require('./routes/usuario');
+const pedidoRouter = require('./routes/pedidos');
 
 // Middlewares
 app.use(cors({
@@ -26,6 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Rotas
 app.use('/api/produto', produtoRouter);
-app.use('/api/usuario', usuarioRouter);
+app.use('/api/pedidos', pedidoRouter);
 
 module.exports = app;
