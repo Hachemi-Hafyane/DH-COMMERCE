@@ -1,6 +1,6 @@
   <?php
   session_start();
-  if(isset($_SESSION["user_id"]) && $_SESSION["user_email"]) {    
+  if(isset($_SESSION["user_id"]) && $_SESSION["user_email"] && $_SESSION['user_tipo'] === 'Admin') {   
     include("../DB/db_conn.php");
     include("../DB/categoria.php");
     $categorias = categorias($conn);
@@ -108,8 +108,13 @@
     </body>
   </html>
   <?php    
+ }else{
+  if($_SESSION['user_tipo'] !== 'Admin'){
+    header("Location: ../pagina/index.php");
+  exit();
   }else{
-      header("Location: ../pagina/login.php");
-      exit();
-  }
+  header("Location: ../pagina/login.php");
+  exit();
+}
+}
   ?>

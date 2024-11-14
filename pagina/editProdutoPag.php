@@ -1,6 +1,6 @@
 <?php
   session_start();
-  if(isset($_SESSION["user_id"]) && $_SESSION["user_email"]) {    
+  if(isset($_SESSION["user_id"]) && $_SESSION["user_email"] && $_SESSION['user_tipo'] === 'Admin') {    
     if(!isset($_GET['id'])) {
         header('Location: ../pagina/admin.php');
         exit();
@@ -128,8 +128,13 @@
     </body>
   </html>
   <?php    
+ }else{
+  if($_SESSION['user_tipo'] !== 'Admin'){
+    header("Location: ../pagina/index.php");
+  exit();
   }else{
-      header("Location: ../pagina/login.php");
-      exit();
-  }
+  header("Location: ../pagina/login.php");
+  exit();
+}
+}
   ?>

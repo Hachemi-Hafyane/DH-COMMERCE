@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_SESSION["user_id"]) && $_SESSION["user_email"]) {
+if(isset($_SESSION["user_id"]) && $_SESSION["user_email"] && $_SESSION['user_tipo'] === 'Admin') {   
     include("../DB/db_conn.php");
 
     // Verifica se o ID do produto foi passado pela URL
@@ -31,8 +31,13 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_email"]) {
         header("Location: ../pagina/admin.php?error=ID do produto não encontrado.");
         exit();
     }
-} else {
+}else{
+    if($_SESSION['user_tipo'] !== 'Admin'){
+      header("Location: ../pagina/index.php");
+    exit();
+    }else{
     header("Location: ../pagina/login.php");
     exit();
-}
+  }
+  }
 ?>

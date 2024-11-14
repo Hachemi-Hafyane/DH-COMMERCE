@@ -1,7 +1,7 @@
 
 <?php
 session_start();
-if(isset($_SESSION["user_id"]) && $_SESSION["user_email"]) {    
+if(isset($_SESSION["user_id"]) && $_SESSION["user_email"] && $_SESSION['user_tipo'] === 'Admin') {   
     include("../DB/db_conn.php");
     if(isset($_POST['nomeCategoria']) && isset($_POST['idCategoria'])){
     $nomeCat = $_POST['nomeCategoria'];
@@ -29,7 +29,11 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_email"]) {
     }
 
 }else{
+    if($_SESSION['user_tipo'] !== 'Admin'){
+      header("Location: ../pagina/index.php");
+    exit();
+    }else{
     header("Location: ../pagina/login.php");
     exit();
-}
-
+  }
+  }

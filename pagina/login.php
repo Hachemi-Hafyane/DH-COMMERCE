@@ -22,16 +22,20 @@
 <div class="container">
 	<div class="d-flex justify-content-center h-100">
 		<div class="card">
-			<div class="card-header">
-			<?php 
-				if(isset($_GET['error'])){
-			?>
-			<div class="alert alert-danger" role="alert">
-  			<?php echo htmlspecialchars($_GET['error']) ?>
-			</div>
-			<?php
-				}
-			?>
+		 <div class="card-header">
+		 <?php 
+          if(isset($_GET['error'])){
+        ?>
+        <div class="alert alert-danger" role="alert">
+          <?php echo htmlspecialchars($_GET['error']) ?>
+        </div>
+        <?php
+          }else if(isset($_GET['success'])){
+        ?>
+              <div class="alert alert-success" role="alert">
+          <?php echo htmlspecialchars($_GET['success']) ?>
+        </div>
+              <?php } ?>
 				<h3 class="text-center">Login</h3>
 			</div>
 			<div class="card-body">
@@ -55,11 +59,12 @@
 			</div>
 			<div class="card-footer">
 				<div class="d-flex justify-content-center links">
-					Você não possui conta?<a href="#">Cadastre aqui</a>
+					Você não possui conta?<a href="../pagina/cadastrarPag.php">Cadastre aqui</a>
 				</div>
 			</div>
 		</div>
 	</div>
+	
 </div>
 </body>
 </html>
