@@ -2,9 +2,30 @@
 session_start();
 include "../DB/db_conn.php"; // Conexão ao banco usando PDO
 include("../DB/categoria.php");
-$categorias = categorias($conn); // Obtém categorias do banco
-$start = isset($_GET['start']) ? (int)$_GET['start'] : 61; // Valor padrão 1
-$end = isset($_GET['end']) ? (int)$_GET['end'] : 71; // Valor padrão 10 (exemplo)
+$categorias = categorias($conn);
+// Verifica se o ID do produto foi passado na URL
+if (isset($_GET['p'])) {
+    $produtoId = (int)$_GET['p'];
+
+    // Consulta para buscar informações do produto pelo ID
+    $query = "SELECT p.id, p.titulo, p.descricao, p.preco, p.file AS imagem, c.titulo AS categoria 
+              FROM produtos p 
+              JOIN categorias c ON p.categoria_id = c.id 
+              WHERE p.id = :produtoId";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
+    $stmt->execute();
+    $produto = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Verifica se o produto foi encontrado
+    if (!$produto) {
+        echo "Produto não encontrado!";
+        exit;
+    }
+} else {
+    echo "Produto inválido!";
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -193,70 +214,24 @@ $end = isset($_GET['end']) ? (int)$_GET['end'] : 71; // Valor padrão 10 (exempl
 		</div>
 		<!-- /MAIN HEADER -->
 	</header>
-	<!-- /HEADER -->
 
-	<!-- PRODUCTS -->
-	<div class="container mainn-raised mt-4">
-		<div class="row">
-			<?php
-			$query = "SELECT p.id, p.titulo, p.preco, p.file AS imagem, c.titulo AS categoria 
-	   FROM produtos p 
-	   JOIN categorias c ON p.categoria_id = c.id 
-	   WHERE p.id BETWEEN :start AND :end";
-			$stmt = $conn->prepare($query);
-			// Passando os parâmetros corretamente
-			$stmt->bindParam(':start', $start, PDO::PARAM_INT);
-			$stmt->bindParam(':end', $end, PDO::PARAM_INT);
-			$stmt->execute();
-			$produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-			if ($produtos) :
-				foreach ($produtos as $produto) : ?>
-					<p></p>
-					<P></P>
-					<P></P>
-					<P></P>
-					<div class="col-md-4 mb-4">
-						<div class="card h-100 shadow-sm">
-							<a href="product.php?p=<?= htmlspecialchars($produto['id']) ?>">
-								<?php
-								$imagePath = "../uploads/file/" . htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8');
-								?>
-								<a href="produtoPag.php?p=<?= htmlspecialchars($produto['id']) ?>">
-									<img src="<?= $imagePath ?>"
-										class="card-img-top"
-										alt="<?= htmlspecialchars($produto['titulo'], ENT_QUOTES, 'UTF-8') ?>"
-										style="max-height: 200px; object-fit: cover;">
-								</a>
-
-							</a>
-							<P></P>
-							<P></P>
-							<P></P>
-							<div class="card-body">
-								<h5 class="card-title text-uppercase"><?= htmlspecialchars($produto['titulo']) ?></h5>
-								<p class="card-text text-muted"><?= htmlspecialchars($produto['categoria']) ?></p>
-								<h6 class="text-danger">R$<?= htmlspecialchars($produto['preco']) ?></h6>
-							</div>
-							<div class="card-footer bg-transparent border-0">
-								<button class="btn btn-primary btn-block add-to-cart-btn" pid="<?= htmlspecialchars($produto['id']) ?>">
-									<i class="fa fa-shopping-cart"></i> Adicionar ao Carrinho
-								</button>
-							</div>
-						</div>
-					</div>
-				<?php endforeach;
-			else : ?>
-				<p></p>
-				<p></p>
-
-				<div class="col-12">
-					<p class="text-center">Nenhum produto disponível no momento.</p>
-				</div>
-			<?php endif; ?>
-		</div>
-	</div>
-	<!-- /PRODUCTS -->
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Imagem do produto -->
+                <img src="../uploads/file/<?= htmlspecialchars($produto['imagem']) ?>" alt="<?= htmlspecialchars($produto['titulo']) ?>" class="img-fluid" style="max-height: 400px; object-fit: cover;">
+            </div>
+            <div class="col-md-6">
+                <!-- Informações do produto -->
+                <h1><?= htmlspecialchars($produto['titulo']) ?></h1>
+                <p class="text-muted">Categoria: <?= htmlspecialchars($produto['categoria']) ?></p>
+                <h3 class="text-danger">R$<?= htmlspecialchars($produto['preco']) ?></h3>
+                <p><?= nl2br(htmlspecialchars($produto['descricao'])) ?></p>
+                <button class="btn btn-primary btn-lg mt-3">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

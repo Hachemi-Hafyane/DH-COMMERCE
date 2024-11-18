@@ -23,7 +23,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $user_id = $user["id"];
         $user_email = $user["email"];
         $user_password = $user["senha"];
-        $user_tipo = $user["tipo"]; // Capturando o tipo de usuário
+        $user_tipo = $user["tipo"];  // Capturando o tipo de usuário
+        $user_nome = $user["nome_usuario"];
 
         if ($email === $user_email) {
             // Verifica se a senha é correta
@@ -31,6 +32,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
                 $_SESSION["user_id"] = $user_id;
                 $_SESSION["user_email"] = $user_email;
                 $_SESSION["user_tipo"] = $user_tipo;
+                $_SESSION["user_nome"] = $user_nome;
 
                 // Redireciona de acordo com o tipo de usuário
                 if ($user_tipo === 'Admin') {
